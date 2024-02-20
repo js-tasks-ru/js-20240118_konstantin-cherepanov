@@ -1,3 +1,7 @@
+import {
+  template
+} from "@babel/core";
+
 export default class ColumnChart {
   element;
   dataElements = {};
@@ -7,7 +11,7 @@ export default class ColumnChart {
     data = [],
     label = '',
     value = 0,
-    formatHeading,
+    formatHeading = value => value,
     link = ''
   } = {}) {
     this.data = data;
@@ -21,11 +25,11 @@ export default class ColumnChart {
   getColumn(data) {
     const maxValue = Math.max(...data);
     return data.map(item => {
-      const size = this.chartHeight / maxValue;
-      const percent = (item / maxValue * 100).toFixed(0);
-      return `<div style="--value: ${Math.floor(item * size)}" data-tooltip="${percent}%"></div>`;
-    })
-    .join('');
+        const size = this.chartHeight / maxValue;
+        const percent = (item / maxValue * 100).toFixed(0);
+        return `<div style="--value: ${Math.floor(item * size)}" data-tooltip="${percent}%"></div>`;
+      })
+      .join('');
   }
 
   getLink() {
@@ -57,7 +61,6 @@ export default class ColumnChart {
     if (this.data.length) {
       this.element.classList.remove('column-chart_loading');
     }
-    this.dataElements = this.getDataElements(this.element);
   }
 
   getDataElements(element) {
@@ -66,7 +69,7 @@ export default class ColumnChart {
   }
 
   update(data) {
-    this.dataElements.innerHTML = this.getColumn(data);
+    this.element.querySelector('[data-element="data"]').innerHTML = this.getColumn(data);
   }
 
   remove() {
