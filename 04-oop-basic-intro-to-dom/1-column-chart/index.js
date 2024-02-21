@@ -1,6 +1,5 @@
 export default class ColumnChart {
   element;
-  dataElements = {};
   chartHeight = 50;
 
   constructor({
@@ -59,11 +58,6 @@ export default class ColumnChart {
     }
   }
 
-  getDataElements(element) {
-    const elements = element.querySelectorAll('[data-element="data"]');
-    return elements[0];
-  }
-
   update(data) {
     this.element.querySelector('[data-element="data"]').innerHTML = this.getColumn(data);
   }
@@ -74,6 +68,5 @@ export default class ColumnChart {
 
   destroy() {
     this.remove();
-    this.dataElements = {};
   }
 }
