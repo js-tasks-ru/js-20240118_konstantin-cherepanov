@@ -5,7 +5,8 @@ export default class SortableTable {
   constructor(headerConfig = [], data = []) {
     this.headerConfig = headerConfig;
     this.data = Array.isArray(data) ? data : data.data;
-    this.render();
+    this.createElement();
+    this.subElements = {};
   }
 
   sort(fieldValue, orderValue = 'asc') {
@@ -23,15 +24,15 @@ export default class SortableTable {
     this.update(sortedArray);
   }
 
-  getHeader() {
+  createTemplateHeader() {
     return (`
       <div class = "sortable-table__header sortable-table__row">
-        ${this.headerConfig.map((headerItem) => this.getHeaderCell(headerItem)).join('')}
+        ${this.headerConfig.map((headerItem) => this.createTemplateHeaderCell(headerItem)).join('')}
       </div>
     `);
   }
 
-  getHeaderCell({
+  createTemplateHeaderCell({
     title
   }) {
     return (`
@@ -44,34 +45,34 @@ export default class SortableTable {
     `);
   }
 
-  getCell(dataValue, template) {
+  createTemplateCell(dataValue, template) {
     return (
       template ? template(dataValue) : `<div class="sortable-table__cell">${dataValue}</div>`
     );
   }
 
-  getRow(dataRow) {
+  createTemplateRow(dataRow) {
     const cell = this.headerConfig
       .map(({
         id,
         template
-      }) => this.getCell(dataRow[id], template))
+      }) => this.createTemplateCell(dataRow[id], template))
       .join('');
     return (`<div class="sortable-table__row">${cell}</div>`);
   }
 
-  getBody() {
+  createTemplateTableBody() {
     return (
-      this.data.map((dataRow) => this.getRow(dataRow))
+      this.data.map((dataRow) => this.createTemplateRow(dataRow))
     );
   }
 
-  getTable() {
+  createTemplateTable() {
     return (`
       <div class="sortable-table">
-         ${this.getHeader()}
+         ${this.createTemplateHeader()}
          <div class="sortable-table__body" data-role="body">
-           ${this.getBody().join('')}
+           ${this.createTemplateTableBody().join('')}
          </div>
       </div>
     `);
@@ -84,12 +85,12 @@ export default class SortableTable {
         body: document.querySelector('[data-role="body"]')
       };
     }
-    this.subElements.body.innerHTML = this.getBody().join('');
+    this.subElements.body.innerHTML = this.createTemplateTableBody().join('');
   }
 
-  render() {
+  createElement() {
     const element = document.createElement('div');
-    element.innerHTML = this.getTable();
+    element.innerHTML = this.createTemplateTable();
     this.element = element.firstElementChild;
   }
 
